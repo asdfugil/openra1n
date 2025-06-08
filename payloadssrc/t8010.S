@@ -70,8 +70,8 @@ bl loc_c
 mov x8, #0x100000000
 movk x8, #0x630
 
-mov w0, #0
-mov w19, #0
+mov w0, #4
+mov w19, #4
 br x8
 
 loc_b8:
