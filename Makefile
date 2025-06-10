@@ -1,6 +1,7 @@
 CFLAGS = -I./include -Wall -Wno-pointer-sign
 CFLAGS += -Os
 BIN = openra1n
+BREW != brew --prefix
 SOURCE = openra1n.c lz4/lz4.c lz4/lz4hc.c
 ifeq ($(LIBUSB),1)
 	CC = gcc
@@ -12,7 +13,7 @@ else
 	LDFLAGS += -framework IOKit -framework CoreFoundation
 endif
 
-OBJCOPY = /opt/homebrew/opt/binutils/bin/gobjcopy
+OBJCOPY = $(BREW)/opt/binutils/bin/gobjcopy
 
 .PHONY: all clean payloads openra1n
 
