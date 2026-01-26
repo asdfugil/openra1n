@@ -30,6 +30,7 @@
 #include <lz4/lz4.h>
 #include <lz4/lz4hc.h>
 #include <common/log.h>
+#include <unistd.h>
 
 #include <payloads/t7000.bin.h>
 #include <payloads/s8000.bin.h>
@@ -111,10 +112,9 @@ typedef struct
 } checkm8_overwrite_t;
 
 extern uint8_t payloads_lz4dec_bin[];
-extern unsigned payloads_lz4dec_bin_len;
 
 uint8_t *payloads_Pongo_bin;
-int payloads_Pongo_bin_len;
+size_t payloads_Pongo_bin_len;
 
 static uint16_t cpid;
 static const char *pwnd_str = " YOLO:checkra1n";
@@ -1218,7 +1218,7 @@ static bool
 checkm8_stage_patch(const usb_handle_t *handle)
 {
     size_t i, data_sz, packet_sz;
-    uint8_t *data;
+    uint8_t *data = NULL;
     transfer_ret_t transfer_ret;
     bool ret = false;
     
@@ -1349,9 +1349,9 @@ static bool checkm8_boot_pongo(usb_handle_t *handle)
     void *shellcode = malloc(512);
     memcpy(shellcode, payloads_lz4dec_bin, payloads_lz4dec_bin_len);
     size_t out_len = payloads_Pongo_bin_len;
-    void *out = malloc(out_len);
+    char *out = malloc(out_len);
     compress_pongo(out, &out_len);
-    LOG_DEBUG("Compressed pongoOS from %u to %zu bytes", payloads_Pongo_bin_len, out_len);
+    LOG_DEBUG("Compressed pongoOS from %zu to %zu bytes", payloads_Pongo_bin_len, out_len);
     void *tmp = malloc(out_len + 512);
     memcpy(tmp, shellcode, 512);
     memcpy(tmp + 512, out, out_len);
